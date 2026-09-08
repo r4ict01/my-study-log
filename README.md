@@ -16,6 +16,8 @@ HTML/CSS/JavaScriptとlocalStorageだけで動く、気分ログ付きの小さ�
 
 `index.html` をブラウザで開くだけで使えます。ビルドやサーバー起動は不要です。
 
+Live Serverで開かないので、ポートから開きました。
+
 ```text
 tiny-diary/
 ├── index.html
