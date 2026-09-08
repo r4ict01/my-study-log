@@ -1,4 +1,5 @@
 const STORAGE_KEY = "my-study-log.entries.v1";
+const GOOGLE_SHEETS_URL = "";
 
 const form = document.querySelector("#study-form");
 const dateInput = document.querySelector("#entry-date");
@@ -37,6 +38,23 @@ function loadEntries() {
 
 function saveEntries() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+}
+
+async function sendEntryToGoogleSheets(entry) {
+  if (!GOOGLE_SHEETS_URL) {
+    return false;
+  }
+
+  await fetch(GOOGLE_SHEETS_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: {
+      "Content-Type": "text/plain",
+    },
+    body: JSON.stringify(entry),
+  });
+
+  return true;
 }
 
 function getTodayIso() {
@@ -181,7 +199,7 @@ function loadEntryIntoForm(entry) {
   updateSaveState("編集中");
 }
 
-form.addEventListener("submit", (event) => {
+form.addEventListener("submit", async (event) => {
   event.preventDefault();
   const date = dateInput.value;
   const subject = subjectInput.value.trim();
@@ -206,7 +224,13 @@ form.addEventListener("submit", (event) => {
   saveEntries();
   render();
   loadEntryIntoForm(nextEntry);
-  updateSaveState("保存済み");
+  try {
+    const sentToGoogleSheets = await sendEntryToGoogleSheets(nextEntry);
+    updateSaveState(sentToGoogleSheets ? "保存・Sheets送信済み" : "保存済み（Sheets未設定）");
+  } catch (error) {
+    console.error("Googleスプレッドシートへの送信に失敗しました", error);
+    updateSaveState("保存済み（Sheets送信失敗）");
+  }
 });
 
 dateInput.addEventListener("change", () => {

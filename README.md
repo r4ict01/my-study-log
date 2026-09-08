@@ -38,6 +38,35 @@ python3 -m http.server 8000
 
 外部ライブラリは使っていません。
 
+## Googleスプレッドシートへの保存
+
+Google Apps ScriptのウェブアプリURLを `app.js` の `GOOGLE_SHEETS_URL` に設定すると、「学習ログを保存」したときに、その記録をGoogleスプレッドシートへ追加できます。URLが空の場合は、これまでどおりブラウザ内への保存だけを行います。
+
+Apps Scriptでは、次のコードを使います。スプレッドシートの「拡張機能」→「Apps Script」を開き、貼り付けてください。
+
+```javascript
+function doPost(e) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("シート1");
+  const data = JSON.parse(e.postData.contents);
+
+  sheet.appendRow([
+    data.date,
+    data.subject,
+    data.duration,
+    data.understanding,
+    data.content,
+    data.nextAction || "",
+    new Date(),
+  ]);
+
+  return ContentService
+    .createTextOutput(JSON.stringify({ success: true }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+```
+
+Apps Scriptをウェブアプリとしてデプロイし、発行されたURLを `GOOGLE_SHEETS_URL` に設定してください。送信先のスプレッドシートには、個人情報を入力しないでください。
+
 ## localStorage
 
 保存キーは `my-study-log.entries.v1` です。既存の「かんたん日記」データとは別の保存領域を使うため、日記データを上書きしません。
