@@ -4,6 +4,8 @@ HTML/CSS/JavaScriptとlocalStorageだけで動く、気分ログ付きの小さ�
 
 日付ごとに「今日の気分」と「一言メモ」を保存できます。保存した記録はブラウザのlocalStorageに残るため、ページを閉じても同じブラウザで再度開けば過去ログを確認できます。
 
+> このリポジトリは、学習ログアプリに育てるための土台として使います。
+
 ## 📱 デモ
 
 🔗 [https://gigaschool.github.io/tiny-diary/](https://gigaschool.github.io/tiny-diary/)
