@@ -22,7 +22,6 @@ const averageEvaluation = document.querySelector("#average-evaluation");
 const summaryRow = document.querySelector("#summary-row");
 const subjectFilter = document.querySelector("#subject-filter");
 const periodFilter = document.querySelector("#period-filter");
-const progressMessage = document.querySelector("#progress-message");
 const evaluationChart = document.querySelector("#evaluation-chart");
 const evaluationSubjectFilter = document.querySelector("#evaluation-subject-filter");
 const evaluationPeriodFilter = document.querySelector("#evaluation-period-filter");
@@ -203,7 +202,6 @@ function renderSummary() {
   summaryRow.innerHTML = Object.entries(counts).sort(([, a], [, b]) => b - a)
     .map(([method, count]) => `<span class="summary-chip">${escapeHtml(method)} ${count}件</span>`).join("");
   renderEvaluationChart();
-  progressMessage.textContent = evaluatedEntries.length ? "選択した科目の評価の変化を確認できます" : "評価を保存すると集計されます";
 }
 
 function renderEvaluationChart() {
