@@ -1,5 +1,6 @@
 const STORAGE_KEY = "my-study-log.entries.v1";
 const GOOGLE_SHEETS_URL = "";
+const SUBJECTS = ["国語", "算数", "社会", "理科", "音楽", "体育", "図工", "道徳", "英語", "総合的な学習"];
 
 const form = document.querySelector("#study-form");
 const dateInput = document.querySelector("#entry-date");
@@ -23,6 +24,7 @@ const searchInput = document.querySelector("#search-input");
 const subjectFilter = document.querySelector("#subject-filter");
 const progressMessage = document.querySelector("#progress-message");
 const evaluationChart = document.querySelector("#evaluation-chart");
+const evaluationSubjectFilter = document.querySelector("#evaluation-subject-filter");
 
 let entries = loadEntries();
 
@@ -129,14 +131,32 @@ function renderEntries() {
 
 function renderSubjectFilter() {
   const currentValue = subjectFilter.value;
-  const subjects = [...new Set(entries.map((entry) => entry.subject))].sort();
+  const subjects = getSubjects();
   subjectFilter.innerHTML = `<option value="all">すべての科目</option>${subjects.map((subject) => `<option value="${escapeHtml(subject)}">${escapeHtml(subject)}</option>`).join("")}`;
   subjectFilter.value = subjects.includes(currentValue) ? currentValue : "all";
 }
 
+function getSubjects() {
+  return SUBJECTS;
+}
+
+function renderEvaluationSubjectFilter() {
+  const currentValue = evaluationSubjectFilter.value;
+  const subjects = getSubjects();
+  evaluationSubjectFilter.innerHTML = `<option value="all">すべての科目</option>${subjects.map((subject) => `<option value="${escapeHtml(subject)}">${escapeHtml(subject)}</option>`).join("")}`;
+  evaluationSubjectFilter.value = subjects.includes(currentValue) ? currentValue : "all";
+}
+
 function renderSummary() {
   entryCount.textContent = entries.length;
-  const evaluatedEntries = entries.filter((entry) => Number.isInteger(Number(entry.evaluation)) && Number(entry.evaluation) >= 1 && Number(entry.evaluation) <= 5);
+  renderEvaluationSubjectFilter();
+  const selectedSubject = evaluationSubjectFilter.value;
+  const evaluatedEntries = entries.filter((entry) =>
+    (selectedSubject === "all" || entry.subject === selectedSubject)
+    && Number.isInteger(Number(entry.evaluation))
+    && Number(entry.evaluation) >= 1
+    && Number(entry.evaluation) <= 5,
+  );
   const average = evaluatedEntries.length
     ? evaluatedEntries.reduce((sum, entry) => sum + Number(entry.evaluation), 0) / evaluatedEntries.length
     : 0;
@@ -149,12 +169,18 @@ function renderSummary() {
   summaryRow.innerHTML = Object.entries(counts).sort(([, a], [, b]) => b - a)
     .map(([method, count]) => `<span class="summary-chip">${escapeHtml(method)} ${count}件</span>`).join("");
   renderEvaluationChart();
-  progressMessage.textContent = entries.length ? "本時の評価の変化を確認できます" : "記録を保存すると集計されます";
+  progressMessage.textContent = evaluatedEntries.length ? "選択した科目の評価の変化を確認できます" : "評価を保存すると集計されます";
 }
 
 function renderEvaluationChart() {
+  const selectedSubject = evaluationSubjectFilter.value;
   const evaluatedEntries = entries
-    .filter((entry) => Number.isInteger(Number(entry.evaluation)) && Number(entry.evaluation) >= 1 && Number(entry.evaluation) <= 5)
+    .filter((entry) =>
+      (selectedSubject === "all" || entry.subject === selectedSubject)
+      && Number.isInteger(Number(entry.evaluation))
+      && Number(entry.evaluation) >= 1
+      && Number(entry.evaluation) <= 5,
+    )
     .sort((a, b) => a.date.localeCompare(b.date));
 
   if (!evaluatedEntries.length) {
@@ -296,6 +322,7 @@ form.addEventListener("input", () => {
 clearButton.addEventListener("click", resetForm);
 searchInput.addEventListener("input", renderEntries);
 subjectFilter.addEventListener("change", renderEntries);
+evaluationSubjectFilter.addEventListener("change", renderSummary);
 
 entryList.addEventListener("click", (event) => {
   const button = event.target.closest("button");

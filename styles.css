@@ -443,6 +443,19 @@ textarea:focus {
   font-size: 1.3rem;
 }
 
+.chart-subject-filter {
+  display: grid;
+  gap: 6px;
+  max-width: 240px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.chart-subject-filter select {
+  min-height: 38px;
+}
+
 .evaluation-chart {
   min-height: 190px;
   overflow: hidden;
