@@ -102,8 +102,11 @@ function getFilteredEntries() {
   const period = getPeriodRange(selectedPeriod);
   return entries.filter((entry) => {
     const matchesPeriod = !period || (entry.date >= period.start && entry.date <= period.end);
-    return (selectedSubject === "all" || entry.subject === selectedSubject)
-      && (selectedLearningMethod === "all" || entry.learningMethod === selectedLearningMethod)
+    const matchesSubject = selectedSubject === "all" || entry.subject === selectedSubject;
+    const matchesLearningMethod = selectedLearningMethod === "all"
+      || String(entry.learningMethod || "").trim() === selectedLearningMethod;
+    return matchesSubject
+      && matchesLearningMethod
       && matchesPeriod;
   });
 }
