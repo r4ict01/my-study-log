@@ -443,9 +443,8 @@ textarea:focus {
   font-size: 0.9rem;
 }
 
-.evaluation-title {
-  grid-column: 1 / -1;
-  margin-bottom: 0;
+.evaluation-header-title {
+  margin: 0;
 }
 
 .progress-stats strong {
