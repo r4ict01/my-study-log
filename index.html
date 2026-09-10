@@ -127,9 +127,12 @@
 
         <div class="summary-row" id="summary-row" aria-label="学び方の集計"></div>
         <div class="list-tools">
-          <select id="subject-filter" aria-label="科目で絞り込み">
-            <option value="all">すべての科目</option>
-          </select>
+          <label class="subject-list-filter" for="subject-filter">
+            <span>科目</span>
+            <select id="subject-filter" aria-label="科目で絞り込み">
+              <option value="all">すべての科目</option>
+            </select>
+          </label>
           <label class="period-filter" for="period-filter">
             <span>集計する期間</span>
             <select id="period-filter">

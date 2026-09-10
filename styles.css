@@ -576,6 +576,20 @@ textarea:focus {
   font-weight: 800;
 }
 
+.subject-list-filter {
+  display: grid;
+  flex: 0 0 164px;
+  gap: 4px;
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.subject-list-filter select {
+  width: 100%;
+  flex-basis: auto;
+}
+
 .period-filter select {
   width: 100%;
   flex-basis: auto;
