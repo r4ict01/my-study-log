@@ -345,7 +345,7 @@ textarea:focus {
 }
 
 .progress-card {
-  grid-template-columns: minmax(0, 1fr) minmax(0, 180px) minmax(0, 180px);
+  grid-template-columns: minmax(0, 1fr) repeat(3, minmax(0, 160px));
 }
 
 .biorhythm-label,
@@ -468,6 +468,20 @@ textarea:focus {
   color: var(--muted);
   font-size: 0.82rem;
   font-weight: 800;
+}
+
+.chart-learning-method-filter {
+  display: grid;
+  grid-column: 4;
+  grid-row: 1;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.chart-learning-method-filter select {
+  min-height: 38px;
 }
 
 .chart-period-filter select {

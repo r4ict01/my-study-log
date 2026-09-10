@@ -26,6 +26,7 @@ const learningMethodFilter = document.querySelector("#learning-method-filter");
 const evaluationChart = document.querySelector("#evaluation-chart");
 const evaluationSubjectFilter = document.querySelector("#evaluation-subject-filter");
 const evaluationPeriodFilter = document.querySelector("#evaluation-period-filter");
+const evaluationLearningMethodFilter = document.querySelector("#evaluation-learning-method-filter");
 
 let entries = loadEntries();
 
@@ -188,9 +189,11 @@ function renderSummary() {
   renderEvaluationSubjectFilter();
   const selectedSubject = evaluationSubjectFilter.value;
   const selectedPeriod = evaluationPeriodFilter.value;
+  const selectedLearningMethod = evaluationLearningMethodFilter.value;
   const period = getPeriodRange(selectedPeriod);
   const evaluatedEntries = entries.filter((entry) =>
     (selectedSubject === "all" || entry.subject === selectedSubject)
+    && (selectedLearningMethod === "all" || String(entry.learningMethod || "").trim() === selectedLearningMethod)
     && (!period || (entry.date >= period.start && entry.date <= period.end))
     && Number.isInteger(Number(entry.evaluation))
     && Number(entry.evaluation) >= 1
@@ -212,10 +215,12 @@ function renderSummary() {
 
 function renderEvaluationChart() {
   const selectedSubject = evaluationSubjectFilter.value;
+  const selectedLearningMethod = evaluationLearningMethodFilter.value;
   const period = getPeriodRange(evaluationPeriodFilter.value);
   const evaluatedEntries = entries
     .filter((entry) =>
       (selectedSubject === "all" || entry.subject === selectedSubject)
+      && (selectedLearningMethod === "all" || String(entry.learningMethod || "").trim() === selectedLearningMethod)
       && (!period || (entry.date >= period.start && entry.date <= period.end))
       && Number.isInteger(Number(entry.evaluation))
       && Number(entry.evaluation) >= 1
@@ -365,6 +370,7 @@ periodFilter.addEventListener("change", renderEntries);
 learningMethodFilter.addEventListener("change", renderEntries);
 evaluationSubjectFilter.addEventListener("change", renderSummary);
 evaluationPeriodFilter.addEventListener("change", renderSummary);
+evaluationLearningMethodFilter.addEventListener("change", renderSummary);
 
 entryList.addEventListener("click", (event) => {
   const button = event.target.closest("button");
