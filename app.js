@@ -20,7 +20,6 @@ const editingLabel = document.querySelector("#editing-label");
 const entryCount = document.querySelector("#entry-count");
 const averageEvaluation = document.querySelector("#average-evaluation");
 const summaryRow = document.querySelector("#summary-row");
-const searchInput = document.querySelector("#search-input");
 const subjectFilter = document.querySelector("#subject-filter");
 const periodFilter = document.querySelector("#period-filter");
 const progressMessage = document.querySelector("#progress-message");
@@ -96,16 +95,13 @@ function sortEntries() {
 }
 
 function getFilteredEntries() {
-  const query = searchInput.value.trim().toLowerCase();
   const selectedSubject = subjectFilter.value;
   const selectedPeriod = periodFilter.value;
   const period = getPeriodRange(selectedPeriod);
   return entries.filter((entry) => {
-    const text = `${entry.date} ${entry.subject} ${entry.task || ""} ${entry.learningMethod || ""} ${entry.content} ${entry.reflection || entry.nextAction || ""}`.toLowerCase();
     const matchesPeriod = !period || (entry.date >= period.start && entry.date <= period.end);
     return (selectedSubject === "all" || entry.subject === selectedSubject)
-      && matchesPeriod
-      && (!query || text.includes(query));
+      && matchesPeriod;
   });
 }
 
@@ -354,7 +350,6 @@ form.addEventListener("input", () => {
 });
 
 clearButton.addEventListener("click", resetForm);
-searchInput.addEventListener("input", renderEntries);
 subjectFilter.addEventListener("change", renderEntries);
 periodFilter.addEventListener("change", renderEntries);
 evaluationSubjectFilter.addEventListener("change", renderSummary);
