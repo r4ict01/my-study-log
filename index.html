@@ -41,7 +41,7 @@
             </div>
           </div>
 
-          <div class="before-class-notice">授業前に入力しましょう</div>
+          <div class="before-class-notice">授業のはじめに入力しましょう</div>
           <label class="field-label" for="entry-task">本時の課題</label>
           <input id="entry-task" name="task" type="text" maxlength="120" placeholder="例：分数のたし算の仕方を考える" required />
 
@@ -67,6 +67,17 @@
               </select>
             </div>
           </div>
+
+          <div class="before-class-notice">授業の終わりに入力しましょう</div>
+          <label class="field-label" for="entry-evaluation">本時の評価</label>
+          <select id="entry-evaluation" name="evaluation" required>
+            <option value="">選択してください</option>
+            <option value="5">よく理解できた</option>
+            <option value="4">だいたい理解できた</option>
+            <option value="3">ふつう</option>
+            <option value="2">少し難しかった</option>
+            <option value="1">まだ難しい</option>
+          </select>
 
           <label class="field-label" for="entry-content">単元を通した振り返り</label>
           <textarea id="entry-content" name="content" rows="3" maxlength="500" placeholder="単元を通して学んだことや気づきを書いてみよう" required></textarea>

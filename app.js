@@ -7,6 +7,7 @@ const subjectInput = document.querySelector("#entry-subject");
 const taskInput = document.querySelector("#entry-task");
 const learningMethodInput = document.querySelector("#entry-learning-method");
 const understandingInput = document.querySelector("#entry-understanding");
+const evaluationInput = document.querySelector("#entry-evaluation");
 const contentInput = document.querySelector("#entry-content");
 const nextActionInput = document.querySelector("#entry-next-action");
 const clearButton = document.querySelector("#clear-button");
@@ -109,6 +110,7 @@ function renderEntries() {
       </div>
       ${entry.task ? `<p class="entry-task"><strong>本時の課題:</strong> ${escapeHtml(entry.task)}</p>` : ""}
       <div class="understanding">目標とする姿: <span aria-label="${entry.understanding}/5">${"★".repeat(entry.understanding)}${"☆".repeat(5 - entry.understanding)}</span></div>
+      <div class="understanding">本時の評価: <span aria-label="${entry.evaluation || "-"}/5">${entry.evaluation ? `${"★".repeat(entry.evaluation)}${"☆".repeat(5 - entry.evaluation)}` : "未設定"}</span></div>
       <p class="entry-note">${escapeHtml(entry.content)}</p>
       ${entry.nextAction ? `<p class="next-action"><strong>次にやること:</strong> ${escapeHtml(entry.nextAction)}</p>` : ""}
       <div class="entry-actions">
@@ -174,6 +176,7 @@ function loadEntryIntoForm(entry) {
   taskInput.value = entry.task || "";
   learningMethodInput.value = entry.learningMethod || "";
   understandingInput.value = entry.understanding;
+  evaluationInput.value = entry.evaluation || "";
   contentInput.value = entry.content;
   nextActionInput.value = entry.nextAction || "";
   editingLabel.textContent = `${formatDate(entry.date)}の記録を編集中`;
@@ -188,9 +191,10 @@ form.addEventListener("submit", async (event) => {
   const task = taskInput.value.trim();
   const learningMethod = learningMethodInput.value;
   const understanding = Number(understandingInput.value);
+  const evaluation = Number(evaluationInput.value);
   const content = contentInput.value.trim();
   const nextAction = nextActionInput.value.trim();
-  if (!date || !subject || !task || !learningMethod || !understanding || !content) {
+  if (!date || !subject || !task || !learningMethod || !understanding || !evaluation || !content) {
     updateSaveState("入力を確認");
     return;
   }
@@ -198,7 +202,7 @@ form.addEventListener("submit", async (event) => {
   const now = new Date().toISOString();
   const nextEntry = {
     id: existingIndex >= 0 ? entries[existingIndex].id : createId(),
-    date, subject, task, learningMethod, understanding, content, nextAction,
+    date, subject, task, learningMethod, understanding, evaluation, content, nextAction,
     createdAt: existingIndex >= 0 ? entries[existingIndex].createdAt : now,
     updatedAt: now,
   };
@@ -226,6 +230,7 @@ dateInput.addEventListener("change", () => {
   taskInput.value = "";
   learningMethodInput.value = "";
   understandingInput.value = "";
+  evaluationInput.value = "";
   contentInput.value = "";
   nextActionInput.value = "";
   editingLabel.textContent = `${formatDate(dateInput.value)}の記録を書いています`;

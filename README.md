@@ -25,6 +25,7 @@ python3 -m http.server 8000
 - 本時の課題
 - 学び方（一人で学ぶ・友だちと学ぶ・先生と学ぶ）
 - 目標とする姿
+- 本時の評価
 - 単元を通した振り返り
 - 次にやること
 
@@ -56,6 +57,7 @@ function doPost(e) {
     data.task,
     data.learningMethod,
     data.understanding,
+    data.evaluation,
     data.content,
     data.nextAction || "",
     new Date(),
