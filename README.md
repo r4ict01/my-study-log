@@ -27,7 +27,7 @@ python3 -m http.server 8000
 - 目標とする姿
 - 本時の評価
 - 単元を通した振り返り
-- 次にやること
+- 本時の振り返り
 
 学習ログは日付ごとに1件保存され、同じ日付で保存すると更新されます。科目や内容の検索、科目フィルター、学び方の集計、目標とする姿の平均にも対応しています。
 
@@ -59,7 +59,7 @@ function doPost(e) {
     data.understanding,
     data.evaluation,
     data.content,
-    data.nextAction || "",
+    data.reflection || "",
     new Date(),
   ]);
 

@@ -193,6 +193,10 @@ textarea {
   min-height: 69px;
 }
 
+#entry-reflection {
+  min-height: 69px;
+}
+
 input:focus,
 select:focus,
 textarea:focus {

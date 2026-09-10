@@ -9,7 +9,7 @@ const learningMethodInput = document.querySelector("#entry-learning-method");
 const understandingInput = document.querySelector("#entry-understanding");
 const evaluationInput = document.querySelector("#entry-evaluation");
 const contentInput = document.querySelector("#entry-content");
-const nextActionInput = document.querySelector("#entry-next-action");
+const reflectionInput = document.querySelector("#entry-reflection");
 const clearButton = document.querySelector("#clear-button");
 const entryList = document.querySelector("#entry-list");
 const emptyState = document.querySelector("#empty-state");
@@ -95,7 +95,7 @@ function getFilteredEntries() {
   const query = searchInput.value.trim().toLowerCase();
   const selectedSubject = subjectFilter.value;
   return entries.filter((entry) => {
-    const text = `${entry.date} ${entry.subject} ${entry.task || ""} ${entry.learningMethod || ""} ${entry.content} ${entry.nextAction}`.toLowerCase();
+    const text = `${entry.date} ${entry.subject} ${entry.task || ""} ${entry.learningMethod || ""} ${entry.content} ${entry.reflection || entry.nextAction || ""}`.toLowerCase();
     return (selectedSubject === "all" || entry.subject === selectedSubject) && (!query || text.includes(query));
   });
 }
@@ -112,7 +112,7 @@ function renderEntries() {
       <div class="understanding">目標とする姿: <span aria-label="${entry.understanding}/5">${"★".repeat(entry.understanding)}${"☆".repeat(5 - entry.understanding)}</span></div>
       <div class="understanding">本時の評価: <span aria-label="${entry.evaluation || "-"}/5">${entry.evaluation ? `${"★".repeat(entry.evaluation)}${"☆".repeat(5 - entry.evaluation)}` : "未設定"}</span></div>
       <p class="entry-note">${escapeHtml(entry.content)}</p>
-      ${entry.nextAction ? `<p class="next-action"><strong>次にやること:</strong> ${escapeHtml(entry.nextAction)}</p>` : ""}
+      ${(entry.reflection || entry.nextAction) ? `<p class="next-action"><strong>本時の振り返り:</strong> ${escapeHtml(entry.reflection || entry.nextAction)}</p>` : ""}
       <div class="entry-actions">
         <button type="button" data-action="edit" data-date="${entry.date}">編集</button>
         <button class="danger-button" type="button" data-action="delete" data-date="${entry.date}">削除</button>
@@ -178,7 +178,7 @@ function loadEntryIntoForm(entry) {
   understandingInput.value = entry.understanding;
   evaluationInput.value = entry.evaluation || "";
   contentInput.value = entry.content;
-  nextActionInput.value = entry.nextAction || "";
+  reflectionInput.value = entry.reflection || entry.nextAction || "";
   editingLabel.textContent = `${formatDate(entry.date)}の記録を編集中`;
   updateCharCount();
   updateSaveState("編集中");
@@ -193,7 +193,7 @@ form.addEventListener("submit", async (event) => {
   const understanding = Number(understandingInput.value);
   const evaluation = Number(evaluationInput.value);
   const content = contentInput.value.trim();
-  const nextAction = nextActionInput.value.trim();
+  const reflection = reflectionInput.value.trim();
   if (!date || !subject || !task || !learningMethod || !understanding || !evaluation || !content) {
     updateSaveState("入力を確認");
     return;
@@ -202,7 +202,7 @@ form.addEventListener("submit", async (event) => {
   const now = new Date().toISOString();
   const nextEntry = {
     id: existingIndex >= 0 ? entries[existingIndex].id : createId(),
-    date, subject, task, learningMethod, understanding, evaluation, content, nextAction,
+    date, subject, task, learningMethod, understanding, evaluation, content, reflection,
     createdAt: existingIndex >= 0 ? entries[existingIndex].createdAt : now,
     updatedAt: now,
   };
@@ -232,7 +232,7 @@ dateInput.addEventListener("change", () => {
   understandingInput.value = "";
   evaluationInput.value = "";
   contentInput.value = "";
-  nextActionInput.value = "";
+  reflectionInput.value = "";
   editingLabel.textContent = `${formatDate(dateInput.value)}の記録を書いています`;
   updateCharCount();
   updateSaveState("未保存");
