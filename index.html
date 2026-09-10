@@ -18,11 +18,28 @@
         </div>
 
         <form id="study-form" class="study-form">
-          <label class="field-label" for="entry-date">学習日</label>
-          <input id="entry-date" name="date" type="date" required />
-
-          <label class="field-label" for="entry-subject">科目・テーマ</label>
-          <input id="entry-subject" name="subject" type="text" maxlength="60" placeholder="例：JavaScriptの配列" required />
+          <div class="field-grid">
+            <div>
+              <label class="field-label" for="entry-date">学習日</label>
+              <input id="entry-date" name="date" type="date" required />
+            </div>
+            <div>
+              <label class="field-label" for="entry-subject">科目</label>
+              <select id="entry-subject" name="subject" required>
+                <option value="">選択してください</option>
+                <option value="国語">国語</option>
+                <option value="算数">算数</option>
+                <option value="社会">社会</option>
+                <option value="理科">理科</option>
+                <option value="音楽">音楽</option>
+                <option value="体育">体育</option>
+                <option value="図工">図工</option>
+                <option value="道徳">道徳</option>
+                <option value="英語">英語</option>
+                <option value="総合的な学習">総合的な学習</option>
+              </select>
+            </div>
+          </div>
 
           <div class="field-grid">
             <div>
