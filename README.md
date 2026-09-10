@@ -22,6 +22,7 @@ python3 -m http.server 8000
 
 - 学習日
 - 科目（国語・算数・社会・理科・音楽・体育・図工・道徳・英語・総合的な学習）
+- 本時の課題
 - 学び方（一人で学ぶ・友だちと学ぶ・先生と学ぶ）
 - 理解度
 - 学習内容・気づき
@@ -52,6 +53,7 @@ function doPost(e) {
   sheet.appendRow([
     data.date,
     data.subject,
+    data.task,
     data.learningMethod,
     data.understanding,
     data.content,

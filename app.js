@@ -4,6 +4,7 @@ const GOOGLE_SHEETS_URL = "";
 const form = document.querySelector("#study-form");
 const dateInput = document.querySelector("#entry-date");
 const subjectInput = document.querySelector("#entry-subject");
+const taskInput = document.querySelector("#entry-task");
 const learningMethodInput = document.querySelector("#entry-learning-method");
 const understandingInput = document.querySelector("#entry-understanding");
 const contentInput = document.querySelector("#entry-content");
@@ -93,7 +94,7 @@ function getFilteredEntries() {
   const query = searchInput.value.trim().toLowerCase();
   const selectedSubject = subjectFilter.value;
   return entries.filter((entry) => {
-    const text = `${entry.date} ${entry.subject} ${entry.learningMethod || ""} ${entry.content} ${entry.nextAction}`.toLowerCase();
+    const text = `${entry.date} ${entry.subject} ${entry.task || ""} ${entry.learningMethod || ""} ${entry.content} ${entry.nextAction}`.toLowerCase();
     return (selectedSubject === "all" || entry.subject === selectedSubject) && (!query || text.includes(query));
   });
 }
@@ -106,6 +107,7 @@ function renderEntries() {
         <span class="entry-date">${formatDate(entry.date)}</span>
         <span class="learning-method-badge">${escapeHtml(entry.subject)} ・ ${escapeHtml(entry.learningMethod || "学び方未設定")}</span>
       </div>
+      ${entry.task ? `<p class="entry-task"><strong>本時の課題:</strong> ${escapeHtml(entry.task)}</p>` : ""}
       <div class="understanding">理解度: <span aria-label="${entry.understanding}/5">${"★".repeat(entry.understanding)}${"☆".repeat(5 - entry.understanding)}</span></div>
       <p class="entry-note">${escapeHtml(entry.content)}</p>
       ${entry.nextAction ? `<p class="next-action"><strong>次にやること:</strong> ${escapeHtml(entry.nextAction)}</p>` : ""}
@@ -169,6 +171,7 @@ function resetForm() {
 function loadEntryIntoForm(entry) {
   dateInput.value = entry.date;
   subjectInput.value = entry.subject;
+  taskInput.value = entry.task || "";
   learningMethodInput.value = entry.learningMethod || "";
   understandingInput.value = entry.understanding;
   contentInput.value = entry.content;
@@ -182,11 +185,12 @@ form.addEventListener("submit", async (event) => {
   event.preventDefault();
   const date = dateInput.value;
   const subject = subjectInput.value.trim();
+  const task = taskInput.value.trim();
   const learningMethod = learningMethodInput.value;
   const understanding = Number(understandingInput.value);
   const content = contentInput.value.trim();
   const nextAction = nextActionInput.value.trim();
-  if (!date || !subject || !learningMethod || !understanding || !content) {
+  if (!date || !subject || !task || !learningMethod || !understanding || !content) {
     updateSaveState("入力を確認");
     return;
   }
@@ -194,7 +198,7 @@ form.addEventListener("submit", async (event) => {
   const now = new Date().toISOString();
   const nextEntry = {
     id: existingIndex >= 0 ? entries[existingIndex].id : createId(),
-    date, subject, learningMethod, understanding, content, nextAction,
+    date, subject, task, learningMethod, understanding, content, nextAction,
     createdAt: existingIndex >= 0 ? entries[existingIndex].createdAt : now,
     updatedAt: now,
   };
@@ -219,6 +223,7 @@ dateInput.addEventListener("change", () => {
     return;
   }
   subjectInput.value = "";
+  taskInput.value = "";
   learningMethodInput.value = "";
   understandingInput.value = "";
   contentInput.value = "";
