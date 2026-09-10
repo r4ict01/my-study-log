@@ -17,7 +17,7 @@ const saveState = document.querySelector("#save-state");
 const charCount = document.querySelector("#char-count");
 const editingLabel = document.querySelector("#editing-label");
 const entryCount = document.querySelector("#entry-count");
-const averageUnderstanding = document.querySelector("#average-understanding");
+const averageEvaluation = document.querySelector("#average-evaluation");
 const summaryRow = document.querySelector("#summary-row");
 const searchInput = document.querySelector("#search-input");
 const subjectFilter = document.querySelector("#subject-filter");
@@ -136,8 +136,11 @@ function renderSubjectFilter() {
 
 function renderSummary() {
   entryCount.textContent = entries.length;
-  const average = entries.length ? entries.reduce((sum, entry) => sum + entry.understanding, 0) / entries.length : 0;
-  averageUnderstanding.textContent = entries.length ? average.toFixed(1) : "-";
+  const evaluatedEntries = entries.filter((entry) => Number.isInteger(Number(entry.evaluation)) && Number(entry.evaluation) >= 1 && Number(entry.evaluation) <= 5);
+  const average = evaluatedEntries.length
+    ? evaluatedEntries.reduce((sum, entry) => sum + Number(entry.evaluation), 0) / evaluatedEntries.length
+    : 0;
+  averageEvaluation.textContent = evaluatedEntries.length ? average.toFixed(1) : "-";
   const counts = entries.reduce((result, entry) => {
     const method = entry.learningMethod || "学び方未設定";
     result[method] = (result[method] || 0) + 1;
