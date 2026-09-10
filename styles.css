@@ -144,6 +144,17 @@ h2 {
   font-weight: 800;
 }
 
+.before-class-notice {
+  border: 2px solid var(--blue);
+  border-radius: 8px;
+  background: #eef5fc;
+  padding: 10px 12px;
+  color: #315f91;
+  font-size: 0.9rem;
+  font-weight: 800;
+  text-align: center;
+}
+
 input[type="date"],
 .search-box input,
 input[type="text"],
