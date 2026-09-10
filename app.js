@@ -22,6 +22,7 @@ const summaryRow = document.querySelector("#summary-row");
 const searchInput = document.querySelector("#search-input");
 const subjectFilter = document.querySelector("#subject-filter");
 const progressMessage = document.querySelector("#progress-message");
+const evaluationChart = document.querySelector("#evaluation-chart");
 
 let entries = loadEntries();
 
@@ -144,7 +145,53 @@ function renderSummary() {
   }, {});
   summaryRow.innerHTML = Object.entries(counts).sort(([, a], [, b]) => b - a)
     .map(([method, count]) => `<span class="summary-chip">${escapeHtml(method)} ${count}件</span>`).join("");
-  progressMessage.textContent = entries.length ? "いろいろな学び方で取り組んでいます" : "記録を保存すると集計されます";
+  renderEvaluationChart();
+  progressMessage.textContent = entries.length ? "本時の評価の変化を確認できます" : "記録を保存すると集計されます";
+}
+
+function renderEvaluationChart() {
+  const evaluatedEntries = entries
+    .filter((entry) => Number.isInteger(Number(entry.evaluation)) && Number(entry.evaluation) >= 1 && Number(entry.evaluation) <= 5)
+    .sort((a, b) => a.date.localeCompare(b.date));
+
+  if (!evaluatedEntries.length) {
+    evaluationChart.innerHTML = '<p class="chart-empty">本時の評価を保存すると、ここに表示されます</p>';
+    return;
+  }
+
+  const width = 640;
+  const height = 190;
+  const left = 34;
+  const right = 12;
+  const top = 14;
+  const bottom = 34;
+  const chartWidth = width - left - right;
+  const chartHeight = height - top - bottom;
+  const xStep = evaluatedEntries.length > 1 ? chartWidth / (evaluatedEntries.length - 1) : 0;
+  const points = evaluatedEntries.map((entry, index) => {
+    const value = Number(entry.evaluation);
+    const x = evaluatedEntries.length > 1 ? left + index * xStep : width / 2;
+    const y = top + ((5 - value) / 4) * chartHeight;
+    return { entry, value, x, y };
+  });
+  const linePoints = points.map(({ x, y }) => `${x},${y}`).join(" ");
+  const gridLines = [1, 2, 3, 4, 5].map((value) => {
+    const y = top + ((5 - value) / 4) * chartHeight;
+    return `<line x1="${left}" y1="${y}" x2="${width - right}" y2="${y}" /><text x="8" y="${y + 4}">${value}</text>`;
+  }).join("");
+  const pointMarkup = points.map(({ entry, value, x, y }) => `
+    <circle cx="${x}" cy="${y}" r="5" />
+    <text class="evaluation-value" x="${x}" y="${y - 10}">${value}</text>
+    <text class="evaluation-date" x="${x}" y="${height - 10}">${escapeHtml(entry.date.slice(5))}</text>
+  `).join("");
+
+  evaluationChart.innerHTML = `
+    <svg class="evaluation-svg" viewBox="0 0 ${width} ${height}" role="img" aria-label="本時の評価の変化">
+      <g class="evaluation-grid">${gridLines}</g>
+      <polyline class="evaluation-line" points="${linePoints}" />
+      <g class="evaluation-points">${pointMarkup}</g>
+    </svg>
+  `;
 }
 
 function render() {

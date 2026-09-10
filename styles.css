@@ -443,6 +443,65 @@ textarea:focus {
   font-size: 1.3rem;
 }
 
+.evaluation-chart {
+  min-height: 190px;
+  overflow: hidden;
+  border: 1px solid rgba(229, 221, 208, 0.86);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.evaluation-svg {
+  display: block;
+  width: 100%;
+  height: 190px;
+}
+
+.evaluation-grid line {
+  stroke: rgba(118, 113, 107, 0.22);
+  stroke-dasharray: 4 5;
+  stroke-width: 1;
+}
+
+.evaluation-grid text,
+.evaluation-date,
+.evaluation-value {
+  fill: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.evaluation-line {
+  fill: none;
+  stroke: var(--green);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 3;
+}
+
+.evaluation-points circle {
+  fill: #fffefb;
+  stroke: var(--green-dark);
+  stroke-width: 3;
+}
+
+.evaluation-value {
+  fill: var(--green-dark);
+  text-anchor: middle;
+}
+
+.evaluation-date {
+  text-anchor: middle;
+}
+
+.chart-empty {
+  margin: 0;
+  padding: 80px 16px;
+  color: var(--muted);
+  font-size: 0.84rem;
+  text-align: center;
+}
+
 .progress-chart {
   display: flex;
   align-items: end;
