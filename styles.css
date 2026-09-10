@@ -178,6 +178,10 @@ textarea {
   line-height: 1.7;
 }
 
+#entry-content {
+  min-height: 69px;
+}
+
 input:focus,
 select:focus,
 textarea:focus {
