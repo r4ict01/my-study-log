@@ -22,6 +22,7 @@ const averageEvaluation = document.querySelector("#average-evaluation");
 const summaryRow = document.querySelector("#summary-row");
 const subjectFilter = document.querySelector("#subject-filter");
 const periodFilter = document.querySelector("#period-filter");
+const learningMethodFilter = document.querySelector("#learning-method-filter");
 const evaluationChart = document.querySelector("#evaluation-chart");
 const evaluationSubjectFilter = document.querySelector("#evaluation-subject-filter");
 const evaluationPeriodFilter = document.querySelector("#evaluation-period-filter");
@@ -97,10 +98,12 @@ function sortEntries() {
 function getFilteredEntries() {
   const selectedSubject = subjectFilter.value;
   const selectedPeriod = periodFilter.value;
+  const selectedLearningMethod = learningMethodFilter.value;
   const period = getPeriodRange(selectedPeriod);
   return entries.filter((entry) => {
     const matchesPeriod = !period || (entry.date >= period.start && entry.date <= period.end);
     return (selectedSubject === "all" || entry.subject === selectedSubject)
+      && (selectedLearningMethod === "all" || entry.learningMethod === selectedLearningMethod)
       && matchesPeriod;
   });
 }
@@ -356,6 +359,7 @@ form.addEventListener("input", () => {
 clearButton.addEventListener("click", resetForm);
 subjectFilter.addEventListener("change", renderEntries);
 periodFilter.addEventListener("change", renderEntries);
+learningMethodFilter.addEventListener("change", renderEntries);
 evaluationSubjectFilter.addEventListener("change", renderSummary);
 evaluationPeriodFilter.addEventListener("change", renderSummary);
 
