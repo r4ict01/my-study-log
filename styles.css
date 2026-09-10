@@ -452,6 +452,19 @@ textarea:focus {
   font-weight: 800;
 }
 
+.chart-period-filter {
+  display: grid;
+  gap: 6px;
+  max-width: 240px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.chart-period-filter select {
+  min-height: 38px;
+}
+
 .chart-subject-filter select {
   min-height: 38px;
 }

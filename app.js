@@ -25,6 +25,7 @@ const periodFilter = document.querySelector("#period-filter");
 const progressMessage = document.querySelector("#progress-message");
 const evaluationChart = document.querySelector("#evaluation-chart");
 const evaluationSubjectFilter = document.querySelector("#evaluation-subject-filter");
+const evaluationPeriodFilter = document.querySelector("#evaluation-period-filter");
 
 let entries = loadEntries();
 
@@ -181,8 +182,11 @@ function renderSummary() {
   entryCount.textContent = entries.length;
   renderEvaluationSubjectFilter();
   const selectedSubject = evaluationSubjectFilter.value;
+  const selectedPeriod = evaluationPeriodFilter.value;
+  const period = getPeriodRange(selectedPeriod);
   const evaluatedEntries = entries.filter((entry) =>
     (selectedSubject === "all" || entry.subject === selectedSubject)
+    && (!period || (entry.date >= period.start && entry.date <= period.end))
     && Number.isInteger(Number(entry.evaluation))
     && Number(entry.evaluation) >= 1
     && Number(entry.evaluation) <= 5,
@@ -204,9 +208,11 @@ function renderSummary() {
 
 function renderEvaluationChart() {
   const selectedSubject = evaluationSubjectFilter.value;
+  const period = getPeriodRange(evaluationPeriodFilter.value);
   const evaluatedEntries = entries
     .filter((entry) =>
       (selectedSubject === "all" || entry.subject === selectedSubject)
+      && (!period || (entry.date >= period.start && entry.date <= period.end))
       && Number.isInteger(Number(entry.evaluation))
       && Number(entry.evaluation) >= 1
       && Number(entry.evaluation) <= 5,
@@ -353,6 +359,7 @@ clearButton.addEventListener("click", resetForm);
 subjectFilter.addEventListener("change", renderEntries);
 periodFilter.addEventListener("change", renderEntries);
 evaluationSubjectFilter.addEventListener("change", renderSummary);
+evaluationPeriodFilter.addEventListener("change", renderSummary);
 
 entryList.addEventListener("click", (event) => {
   const button = event.target.closest("button");
