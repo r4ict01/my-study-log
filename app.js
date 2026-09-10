@@ -22,6 +22,7 @@ const averageEvaluation = document.querySelector("#average-evaluation");
 const summaryRow = document.querySelector("#summary-row");
 const searchInput = document.querySelector("#search-input");
 const subjectFilter = document.querySelector("#subject-filter");
+const periodFilter = document.querySelector("#period-filter");
 const progressMessage = document.querySelector("#progress-message");
 const evaluationChart = document.querySelector("#evaluation-chart");
 const evaluationSubjectFilter = document.querySelector("#evaluation-subject-filter");
@@ -97,10 +98,43 @@ function sortEntries() {
 function getFilteredEntries() {
   const query = searchInput.value.trim().toLowerCase();
   const selectedSubject = subjectFilter.value;
+  const selectedPeriod = periodFilter.value;
+  const period = getPeriodRange(selectedPeriod);
   return entries.filter((entry) => {
     const text = `${entry.date} ${entry.subject} ${entry.task || ""} ${entry.learningMethod || ""} ${entry.content} ${entry.reflection || entry.nextAction || ""}`.toLowerCase();
-    return (selectedSubject === "all" || entry.subject === selectedSubject) && (!query || text.includes(query));
+    const matchesPeriod = !period || (entry.date >= period.start && entry.date <= period.end);
+    return (selectedSubject === "all" || entry.subject === selectedSubject)
+      && matchesPeriod
+      && (!query || text.includes(query));
   });
+}
+
+function toIsoDate(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function getPeriodRange(period) {
+  if (period === "all") return null;
+  const today = new Date();
+  const start = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  const dayOfWeek = start.getDay();
+  const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+
+  if (period === "this-week") {
+    start.setDate(start.getDate() + mondayOffset);
+    return { start: toIsoDate(start), end: toIsoDate(new Date(start.getFullYear(), start.getMonth(), start.getDate() + 6)) };
+  }
+  if (period === "last-week") {
+    start.setDate(start.getDate() + mondayOffset - 7);
+    return { start: toIsoDate(start), end: toIsoDate(new Date(start.getFullYear(), start.getMonth(), start.getDate() + 6)) };
+  }
+  if (period === "this-month") {
+    return { start: toIsoDate(new Date(start.getFullYear(), start.getMonth(), 1)), end: toIsoDate(new Date(start.getFullYear(), start.getMonth() + 1, 0)) };
+  }
+  return { start: toIsoDate(new Date(start.getFullYear(), start.getMonth() - 1, 1)), end: toIsoDate(new Date(start.getFullYear(), start.getMonth(), 0)) };
 }
 
 function renderEntries() {
@@ -322,6 +356,7 @@ form.addEventListener("input", () => {
 clearButton.addEventListener("click", resetForm);
 searchInput.addEventListener("input", renderEntries);
 subjectFilter.addEventListener("change", renderEntries);
+periodFilter.addEventListener("change", renderEntries);
 evaluationSubjectFilter.addEventListener("change", renderSummary);
 
 entryList.addEventListener("click", (event) => {

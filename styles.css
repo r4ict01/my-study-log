@@ -567,6 +567,20 @@ textarea:focus {
   flex: 0 0 164px;
 }
 
+.period-filter {
+  display: grid;
+  flex: 0 0 164px;
+  gap: 4px;
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.period-filter select {
+  width: 100%;
+  flex-basis: auto;
+}
+
 .empty-state {
   display: grid;
   gap: 6px;
