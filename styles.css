@@ -445,6 +445,7 @@ textarea:focus {
 
 .chart-subject-filter {
   display: grid;
+  grid-column: 1;
   gap: 6px;
   max-width: 240px;
   color: var(--muted);
@@ -454,6 +455,7 @@ textarea:focus {
 
 .chart-period-filter {
   display: grid;
+  grid-column: 2;
   gap: 6px;
   max-width: 240px;
   color: var(--muted);
@@ -463,6 +465,11 @@ textarea:focus {
 
 .chart-period-filter select {
   min-height: 38px;
+}
+
+.chart-subject-filter,
+.chart-period-filter {
+  grid-row: 2;
 }
 
 .chart-subject-filter select {
