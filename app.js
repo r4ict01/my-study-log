@@ -4,7 +4,7 @@ const GOOGLE_SHEETS_URL = "";
 const form = document.querySelector("#study-form");
 const dateInput = document.querySelector("#entry-date");
 const subjectInput = document.querySelector("#entry-subject");
-const durationInput = document.querySelector("#entry-duration");
+const learningMethodInput = document.querySelector("#entry-learning-method");
 const understandingInput = document.querySelector("#entry-understanding");
 const contentInput = document.querySelector("#entry-content");
 const nextActionInput = document.querySelector("#entry-next-action");
@@ -15,12 +15,10 @@ const saveState = document.querySelector("#save-state");
 const charCount = document.querySelector("#char-count");
 const editingLabel = document.querySelector("#editing-label");
 const entryCount = document.querySelector("#entry-count");
-const totalDuration = document.querySelector("#total-duration");
 const averageUnderstanding = document.querySelector("#average-understanding");
 const summaryRow = document.querySelector("#summary-row");
 const searchInput = document.querySelector("#search-input");
 const subjectFilter = document.querySelector("#subject-filter");
-const progressChart = document.querySelector("#progress-chart");
 const progressMessage = document.querySelector("#progress-message");
 
 let entries = loadEntries();
@@ -95,7 +93,7 @@ function getFilteredEntries() {
   const query = searchInput.value.trim().toLowerCase();
   const selectedSubject = subjectFilter.value;
   return entries.filter((entry) => {
-    const text = `${entry.date} ${entry.subject} ${entry.content} ${entry.nextAction}`.toLowerCase();
+    const text = `${entry.date} ${entry.subject} ${entry.learningMethod || ""} ${entry.content} ${entry.nextAction}`.toLowerCase();
     return (selectedSubject === "all" || entry.subject === selectedSubject) && (!query || text.includes(query));
   });
 }
@@ -106,7 +104,7 @@ function renderEntries() {
     <li class="entry-card">
       <div class="entry-topline">
         <span class="entry-date">${formatDate(entry.date)}</span>
-        <span class="duration-badge">${escapeHtml(entry.subject)} ・ ${entry.duration}分</span>
+        <span class="learning-method-badge">${escapeHtml(entry.subject)} ・ ${escapeHtml(entry.learningMethod || "学び方未設定")}</span>
       </div>
       <div class="understanding">理解度: <span aria-label="${entry.understanding}/5">${"★".repeat(entry.understanding)}${"☆".repeat(5 - entry.understanding)}</span></div>
       <p class="entry-note">${escapeHtml(entry.content)}</p>
@@ -133,41 +131,22 @@ function renderSubjectFilter() {
 
 function renderSummary() {
   entryCount.textContent = entries.length;
-  const minutes = entries.reduce((sum, entry) => sum + entry.duration, 0);
   const average = entries.length ? entries.reduce((sum, entry) => sum + entry.understanding, 0) / entries.length : 0;
-  totalDuration.textContent = minutes;
   averageUnderstanding.textContent = entries.length ? average.toFixed(1) : "-";
   const counts = entries.reduce((result, entry) => {
-    result[entry.subject] = (result[entry.subject] || 0) + 1;
+    const method = entry.learningMethod || "学び方未設定";
+    result[method] = (result[method] || 0) + 1;
     return result;
   }, {});
-  summaryRow.innerHTML = Object.entries(counts).sort(([, a], [, b]) => b - a).slice(0, 5)
-    .map(([subject, count]) => `<span class="summary-chip">${escapeHtml(subject)} ${count}件</span>`).join("");
-}
-
-function renderProgress() {
-  if (!entries.length) {
-    progressChart.innerHTML = "";
-    progressMessage.textContent = "記録を保存すると集計されます";
-    return;
-  }
-  progressMessage.textContent = "学習を積み重ねています";
-  const recent = [...entries].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 7).reverse();
-  const maxDuration = Math.max(...recent.map((entry) => entry.duration), 1);
-  progressChart.innerHTML = recent.map((entry) => `
-    <div class="bar-item" title="${escapeHtml(entry.subject)}: ${entry.duration}分">
-      <span class="bar-value">${entry.duration}</span>
-      <div class="bar" style="height: ${Math.max(12, (entry.duration / maxDuration) * 100)}%"></div>
-      <span class="bar-label">${escapeHtml(entry.date.slice(5))}</span>
-    </div>
-  `).join("");
+  summaryRow.innerHTML = Object.entries(counts).sort(([, a], [, b]) => b - a)
+    .map(([method, count]) => `<span class="summary-chip">${escapeHtml(method)} ${count}件</span>`).join("");
+  progressMessage.textContent = entries.length ? "いろいろな学び方で取り組んでいます" : "記録を保存すると集計されます";
 }
 
 function render() {
   sortEntries();
   renderSubjectFilter();
   renderSummary();
-  renderProgress();
   renderEntries();
 }
 
@@ -190,7 +169,7 @@ function resetForm() {
 function loadEntryIntoForm(entry) {
   dateInput.value = entry.date;
   subjectInput.value = entry.subject;
-  durationInput.value = entry.duration;
+  learningMethodInput.value = entry.learningMethod || "";
   understandingInput.value = entry.understanding;
   contentInput.value = entry.content;
   nextActionInput.value = entry.nextAction || "";
@@ -203,11 +182,11 @@ form.addEventListener("submit", async (event) => {
   event.preventDefault();
   const date = dateInput.value;
   const subject = subjectInput.value.trim();
-  const duration = Number(durationInput.value);
+  const learningMethod = learningMethodInput.value;
   const understanding = Number(understandingInput.value);
   const content = contentInput.value.trim();
   const nextAction = nextActionInput.value.trim();
-  if (!date || !subject || !duration || !understanding || !content) {
+  if (!date || !subject || !learningMethod || !understanding || !content) {
     updateSaveState("入力を確認");
     return;
   }
@@ -215,7 +194,7 @@ form.addEventListener("submit", async (event) => {
   const now = new Date().toISOString();
   const nextEntry = {
     id: existingIndex >= 0 ? entries[existingIndex].id : createId(),
-    date, subject, duration, understanding, content, nextAction,
+    date, subject, learningMethod, understanding, content, nextAction,
     createdAt: existingIndex >= 0 ? entries[existingIndex].createdAt : now,
     updatedAt: now,
   };
@@ -240,7 +219,7 @@ dateInput.addEventListener("change", () => {
     return;
   }
   subjectInput.value = "";
-  durationInput.value = "";
+  learningMethodInput.value = "";
   understandingInput.value = "";
   contentInput.value = "";
   nextActionInput.value = "";

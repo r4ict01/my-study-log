@@ -26,8 +26,13 @@
 
           <div class="field-grid">
             <div>
-              <label class="field-label" for="entry-duration">学習時間（分）</label>
-              <input id="entry-duration" name="duration" type="number" min="1" max="1440" placeholder="30" required />
+              <label class="field-label" for="entry-learning-method">学び方</label>
+              <select id="entry-learning-method" name="learningMethod" required>
+                <option value="">選択してください</option>
+                <option value="一人で学ぶ">一人で学ぶ</option>
+                <option value="友だちと学ぶ">友だちと学ぶ</option>
+                <option value="先生と学ぶ">先生と学ぶ</option>
+              </select>
             </div>
             <div>
               <label class="field-label" for="entry-understanding">理解度</label>
@@ -77,13 +82,11 @@
             <strong id="progress-message">記録を保存すると集計されます</strong>
           </div>
           <div class="progress-stats">
-            <span><strong id="total-duration">0</strong>分</span>
             <span>平均理解度 <strong id="average-understanding">-</strong>/5</span>
           </div>
-          <div class="progress-chart" id="progress-chart" aria-label="最近の学習時間"></div>
         </section>
 
-        <div class="summary-row" id="summary-row" aria-label="科目の集計"></div>
+        <div class="summary-row" id="summary-row" aria-label="学び方の集計"></div>
         <div class="list-tools">
           <label class="search-box" for="search-input">
             <span>検索</span>

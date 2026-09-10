@@ -519,7 +519,7 @@ textarea:focus {
   font-weight: 900;
 }
 
-.duration-badge {
+.learning-method-badge {
   display: inline-flex;
   align-items: center;
   min-height: 32px;
