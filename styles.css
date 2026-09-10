@@ -444,7 +444,7 @@ textarea:focus {
 }
 
 .evaluation-header-title {
-  margin: 0;
+  margin: 0 0 10px;
 }
 
 .progress-stats strong {
